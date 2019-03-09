@@ -3,7 +3,7 @@ fn main() {
 
     let arg: Vec<String> = std::env::args().collect();
 
-    if arg.len() != 3 || !std::path::Path::new(&arg[1]).is_dir() {
+    if arg.len() != 3 {
         println!("Wrong parameters!");
         println!("Usage: mp3GainBatRust.exe BAT_FILE SCAN_DIRECTORY");
         println!("example: mp3GainBatRust.exe process.bat c:\\wolololo");
@@ -34,8 +34,7 @@ fn main() {
 }
 
 fn add_line(so: &mut String, si: &String) {
-    so.push_str(&si);
-    so.push_str("\r\n");
+    so.push_str(format!("{}\r\n",&si).as_str());
 }
 
 fn get_files(dir: &std::path::Path, out: &mut Vec<String>) {
@@ -55,16 +54,11 @@ fn get_files(dir: &std::path::Path, out: &mut Vec<String>) {
 }
 
 fn check_extension(path_buf: &std::path::PathBuf) -> bool {
-    if path_buf
+    path_buf
         .extension()
         .unwrap_or(std::ffi::OsStr::new(""))
         .to_str()
         .unwrap_or("")
         .to_lowercase()
         == "mp3"
-    {
-        true
-    } else {
-        false
-    }
 }
