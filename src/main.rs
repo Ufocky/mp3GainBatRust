@@ -18,9 +18,15 @@ fn main() {
 
     let mut cnt = files.len();
     for plik in files {
-        cnt-=1;
-        add_line(&mut output_file, &String::from(format!("mp3gain /r /c \"{}\"",plik)));
-        add_line(&mut output_file, &String::from(format!("echo files left:{}",cnt)));
+        cnt -= 1;
+        add_line(
+            &mut output_file,
+            &String::from(format!("mp3gain /r /c \"{}\"", plik)),
+        );
+        add_line(
+            &mut output_file,
+            &String::from(format!("echo files left:{}", cnt)),
+        );
     }
 
     std::fs::write(std::path::Path::new(&arg[1]), output_file).expect("write error...");
