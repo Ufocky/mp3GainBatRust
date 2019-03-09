@@ -35,13 +35,12 @@ fn get_files(dir: &std::path::Path, out: &mut Vec<String>) {
     if dir.is_dir() {
         let dir_entries = std::fs::read_dir(dir).unwrap();
         for dir_entry in dir_entries {
-            let dir_entry = dir_entry.unwrap();
-            if dir_entry.path().is_dir() {
-                get_files(dir_entry.path().as_path(), out);
+            let dir_entry = dir_entry.unwrap().path();
+            if dir_entry.is_dir() {
+                get_files(dir_entry.as_path(), out);
             } else {
-                let path_buf = dir_entry.path();
-                if check_extension(&path_buf) {
-                    out.push(String::from(path_buf.to_str().unwrap_or("")));
+                if check_extension(&dir_entry) {
+                    out.push(String::from(dir_entry.to_str().unwrap_or("")));
                 }
             }
         }
