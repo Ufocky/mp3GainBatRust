@@ -10,47 +10,48 @@ fn main() {
         return;
     }
 
-    let mut output_file: String = String::from("");
-    add_line(&mut output_file, &String::from("@echo off"));
+    let files: Vec<String> = get_files(std::path::Path::new(&arg[2]));
 
-    let mut files: Vec<String> = Vec::new();
-    get_files(std::path::Path::new(&arg[2]), &mut files);
+    let mut output_file: String = "".to_string();
+    add_line(&mut output_file, &"@echo off".to_string());
 
     let mut cnt = files.len();
     for plik in files {
         cnt -= 1;
         add_line(
             &mut output_file,
-            &String::from(format!("mp3gain /r /c \"{}\"", plik)),
+            &format!("mp3gain /r /c \"{}\"", plik),
         );
         add_line(
             &mut output_file,
-            &String::from(format!("echo files left:{}", cnt)),
+            &format!("echo files left:{}", cnt),
         );
     }
 
     std::fs::write(std::path::Path::new(&arg[1]), output_file)
-        .expect(format!("Could not write to {}. Is this correct file name?", arg[1]).as_str());
+        .expect(format!("Could not write to \"{}\". Is this correct file name?", arg[1]).as_str());
 }
 
 fn add_line(so: &mut String, si: &String) {
     so.push_str(format!("{}\r\n",&si).as_str());
 }
 
-fn get_files(dir: &std::path::Path, out: &mut Vec<String>) {
+fn get_files(dir: &std::path::Path) -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
     if dir.is_dir() {
         let dir_entries = std::fs::read_dir(dir).unwrap();
         for dir_entry in dir_entries {
             let dir_entry = dir_entry.unwrap().path();
             if dir_entry.is_dir() {
-                get_files(dir_entry.as_path(), out);
+                out.append(&mut get_files(dir_entry.as_path()));
             } else {
                 if check_extension(&dir_entry) {
-                    out.push(String::from(dir_entry.to_str().unwrap_or("")));
+                    out.push(dir_entry.to_str().unwrap_or("").to_string());
                 }
             }
         }
     }
+    out
 }
 
 fn check_extension(path_buf: &std::path::PathBuf) -> bool {
