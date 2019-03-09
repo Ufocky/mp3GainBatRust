@@ -14,31 +14,31 @@ fn main() {
 
     let mut output_file: String = "".to_string();
     add_line(&mut output_file, &"@echo off".to_string());
-
     let mut cnt = files.len();
+    println!("found {} mp3 files...", cnt);
     for plik in files {
         cnt -= 1;
-        add_line(
-            &mut output_file,
-            &format!("mp3gain /r /c \"{}\"", plik),
-        );
-        add_line(
-            &mut output_file,
-            &format!("echo files left:{}", cnt),
-        );
+        add_line(&mut output_file, &format!("mp3gain /r /c \"{}\"", plik));
+        add_line(&mut output_file, &format!("echo files left:{}", cnt));
     }
 
-    std::fs::write(std::path::Path::new(&arg[1]), output_file)
-        .expect(format!("Could not write to \"{}\". Is this correct file name?", arg[1]).as_str());
+    std::fs::write(std::path::Path::new(&arg[1]), output_file).expect(
+        format!(
+            "Could not write to \"{}\". Is this correct file name?",
+            arg[1]
+        )
+        .as_str(),
+    );
 }
 
 fn add_line(so: &mut String, si: &String) {
-    so.push_str(format!("{}\r\n",&si).as_str());
+    so.push_str(format!("{}\r\n", &si).as_str());
 }
 
 fn get_files(dir: &std::path::Path) -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
     if dir.is_dir() {
+        println!("scanning {} for mp3 files...", dir.display());
         let dir_entries = std::fs::read_dir(dir).unwrap();
         for dir_entry in dir_entries {
             let dir_entry = dir_entry.unwrap().path();
@@ -50,6 +50,8 @@ fn get_files(dir: &std::path::Path) -> Vec<String> {
                 }
             }
         }
+    } else {
+        println!("error: {} not a directory", dir.display());
     }
     out
 }
