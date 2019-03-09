@@ -16,19 +16,27 @@ fn main() {
     add_line(&mut output_file, &"@echo off".to_string());
     let mut cnt = files.len();
     println!("found {} mp3 files...", cnt);
+
+    if cnt == 0 {
+        println!("File \"{}\" not created.", arg[1]);
+        return;
+    }
+
     for plik in files {
         cnt -= 1;
         add_line(&mut output_file, &format!("mp3gain /r /c \"{}\"", plik));
         add_line(&mut output_file, &format!("echo files left:{}", cnt));
     }
 
-    std::fs::write(std::path::Path::new(&arg[1]), output_file).expect(
-        format!(
+    let result = std::fs::write(std::path::Path::new(&arg[1]), output_file);
+    if result.is_err() {
+        println!(
             "Could not write to \"{}\". Is this correct file name?",
             arg[1]
-        )
-        .as_str(),
-    );
+        );
+    } else {
+        println!("File \"{}\" created.", arg[1]);
+    }
 }
 
 fn add_line(so: &mut String, si: &String) {
