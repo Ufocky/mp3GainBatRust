@@ -29,7 +29,8 @@ fn main() {
         );
     }
 
-    std::fs::write(std::path::Path::new(&arg[1]), output_file).expect("write error...");
+    std::fs::write(std::path::Path::new(&arg[1]), output_file)
+        .expect(format!("Write error to {}", arg[1]).as_str());
 }
 
 fn add_line(so: &mut String, si: &String) {
@@ -54,13 +55,14 @@ fn get_files(dir: &std::path::Path, out: &mut Vec<String>) {
 }
 
 fn check_extension(path_buf: &std::path::PathBuf) -> bool {
-    let fext = path_buf
+    if path_buf
         .extension()
         .unwrap_or(std::ffi::OsStr::new(""))
         .to_str()
         .unwrap_or("")
-        .to_lowercase();
-    if fext == "mp3" {
+        .to_lowercase()
+        == "mp3"
+    {
         true
     } else {
         false
