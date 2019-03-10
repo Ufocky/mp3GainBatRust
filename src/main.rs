@@ -69,13 +69,7 @@ fn get_files(dir: &std::path::Path, sub_level: &usize) -> Vec<String> {
 }
 
 fn check_extension(path_buf: &std::path::PathBuf) -> bool {
-    path_buf
-        .extension()
-        .unwrap_or(std::ffi::OsStr::new(""))
-        .to_str()
-        .unwrap_or("")
-        .to_lowercase()
-        == "mp3"
+    osstr_2_string(&path_buf.extension()).to_lowercase() == "mp3"
 }
 
 fn osstr_2_string(input: &std::option::Option<&std::ffi::OsStr>) -> String {
@@ -91,7 +85,7 @@ fn gen_dist_str(input: &usize) -> String {
     if *input < 1 {
         return "".to_string();
     }
-    if *input > 2 {
+    if *input >= 2 {
         for _ in 0..((*input) - 2) {
             out += "| ";
         }
