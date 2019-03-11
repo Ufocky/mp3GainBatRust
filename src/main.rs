@@ -81,15 +81,24 @@ fn osstr_2_string(input: &std::option::Option<&std::ffi::OsStr>) -> String {
 }
 
 fn gen_dist_str(input: &usize) -> String {
-    let mut out: String = "".to_string();
-    if *input < 1 {
-        return "".to_string();
+    match *input {
+        0 => "".to_string(),
+        1 => "|-".to_string(),
+        n => std::iter::repeat("| ").take(n - 2).collect::<String>() + "|-"
     }
-    if *input >= 2 {
-        for _ in 0..((*input) - 2) {
-            out += "| ";
-        }
-    }
-    out += "|-";
-    out
+}
+
+#[test]
+fn gen_dist_str_test_none() {
+    assert_eq!("", gen_dist_str(&0));
+}
+
+#[test]
+fn gen_dist_str_test_single() {
+    assert_eq!("|-", gen_dist_str(&1));
+}
+
+#[test]
+fn gen_dist_str_test_multi() {
+    assert_eq!("| |-", gen_dist_str(&3));
 }
